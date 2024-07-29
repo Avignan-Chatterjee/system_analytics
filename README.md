@@ -23,6 +23,7 @@ vagrant box add bento/ubuntu-24.04 --provider=libvirt
 
 ```js
 mkdir setup1
+cd setup1
 Vagrant init
 ```
 
