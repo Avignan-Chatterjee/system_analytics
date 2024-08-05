@@ -1,0 +1,53 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Download and add GPG key for Kubernetes
+      apt_key:
+        url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key
+
+    - name: Add Kubernetes APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /
+        state: present
+        filename: kubernetes
+
+    - name: Install kubeadm, kubelet, kubectl
+      apt:
+        name: ['kubeadm', 'kubelet', 'kubectl']
+        state: present
+        update_cache: yes
+
+    - name: Hold the versions of kubeadm, kubelet, kubectl
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+        allow_downgrade: yes
+      with_items:
+        - kubeadm
+        - kubelet
+        - kubectl
+      ignore_errors: yes
+
+    - name: Turn off all swap devices and files
+      command: swapoff -a
+
+    - name: Remove swap entry from /etc/fstab
+      replace:
+        path: /etc/fstab
+        regexp: '^\s*([^#\s]+\s+){2}swap\s+'
+        replace: '# \g<0>'
+        backup: yes
+
+    - name: Enable and start Docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
