@@ -12,10 +12,16 @@
         dest: /home/vagrant/join_command.sh
       become_user: vagrant
 
-    - name: Fetch the file from remote server
+    - name: Fetch join command file from remote server
       fetch:
         src: /home/vagrant/join_command.sh
         dest: /tmp/join_command.sh
+        flat: yes
+
+    - name: Fetch kube config file from remote server
+      fetch:
+        src: /home/vagrant/.kube/config
+        dest: /tmp/master_kube_config
         flat: yes
 
 - hosts: workers
@@ -26,6 +32,28 @@
         src: /tmp/join_command.sh
         dest: /tmp/join_command.sh
 
-    - name: Execute join command
+    - name: Execute join command on worker
       shell: sh /tmp/join_command.sh
 
+    - name: Create .kube directory on worker
+      file:
+        path: /home/vagrant/.kube
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0755'
+
+    - name: Copy kube config from master
+      copy:
+        src: /tmp/master_kube_config
+        dest: /home/vagrant/.kube/config
+
+    - name: Change ownership to current user
+      file:
+        path: /home/vagrant/.kube/config
+        owner: vagrant
+        group: vagrant
+
+    - name: Set KUBECONFIG environment variable
+      shell: echo "export KUBECONFIG=/home/vagrant/.kube/config" >> /home/vagrant/.bashrc
+      become_user: vagrant
