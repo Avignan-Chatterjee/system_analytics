@@ -1,0 +1,26 @@
+---
+- name: Install Helm on target hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure curl is installed
+      ansible.builtin.package:
+        name: curl
+        state: present
+
+    - name: Download the Helm installation script
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        dest: /tmp/get_helm.sh
+        mode: '0755'
+
+    - name: Install Helm
+      ansible.builtin.command: /tmp/get_helm.sh
+
+    - name: Verify Helm installation
+      ansible.builtin.command: helm version --short
+      register: helm_version_output
+
+    - name: Print Helm version
+      ansible.builtin.debug:
+        msg: "{{ helm_version_output.stdout }}"

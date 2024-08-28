@@ -3,3 +3,4 @@ vagrant up
 ansible-playbook -i hosts.ini k8s-setup.yml
 ansible-playbook -i hosts.ini k8s-master.yml
 ansible-playbook -i hosts.ini k8s-workers.yml
+ansible-playbook -i hosts.ini install-helm.yml

@@ -54,6 +54,11 @@
         owner: vagrant
         group: vagrant
 
+    - name: Set kube config file permissions to 0600
+      ansible.builtin.file:
+        path: /home/vagrant/.kube/config
+        mode: '0600'
+
     - name: Set KUBECONFIG environment variable
       shell: echo "export KUBECONFIG=/home/vagrant/.kube/config" >> /home/vagrant/.bashrc
       become_user: vagrant
