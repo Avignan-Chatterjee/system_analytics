@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nats
+  namespace: nats
+spec:
+  serviceName: nats-cluster
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nats
+  template:
+    metadata:
+      labels:
+        app: nats
+    spec:
+      initContainers:
+        - name: init-config
+          image: busybox
+          command: ['sh', '-c', 'cp /etc/config/nats.conf /etc/nats/nats.conf && sed -i "s|\${SERVER_NAME}|${POD_NAME}|g" /etc/nats/nats.conf']
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: nats-config
+              mountPath: /etc/config
+            - name: nats-config-volume
+              mountPath: /etc/nats
+      containers:
+        - name: nats
+          image: nats:latest
+          ports:
+            - containerPort: 4222  # Client port
+            - containerPort: 6222  # Cluster port
+          volumeMounts:
+            - name: nats-config-volume
+              mountPath: /etc/nats
+            - name: nats-data
+              mountPath: /data/jetstream
+          command: ["nats-server", "--config", "/etc/nats/nats.conf"]
+      volumes:
+        - name: nats-config
+          configMap:
+            name: nats-config
+        - name: nats-config-volume
+          emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: nats-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 1Gi  # Adjust size as needed
+
