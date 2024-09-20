@@ -14,7 +14,6 @@ ansible-playbook -i hosts.ini install-helm.yml
 
 # Get kubeconfig from master.
 echo "Setup kubeconfig"
-rm /tmp/kubeconfig
 sshpass -pvagrant scp vagrant@192.168.1.101:/home/vagrant/.kube/config /tmp/kubeconfig
 source ./set_kubeconfig.sh
 
