@@ -12,7 +12,11 @@ ansible-playbook -i ansible_playbooks/hosts.ini ansible_playbooks/k8s-master.yml
 ansible-playbook -i ansible_playbooks/hosts.ini ansible_playbooks/k8s-workers.yml
 ansible-playbook -i ansible_playbooks/hosts.ini ansible_playbooks/install-helm.yml
 
+sleep 5
 # Get kubeconfig from master.
 echo "Setup kubeconfig"
+if [ -f "/tmp/kubeconfig" ]; then
+	rm /tmp/kubeconfig
+fi
 sshpass -pvagrant scp vagrant@192.168.1.101:/home/vagrant/.kube/config /tmp/kubeconfig
 source ../utils/set_kubeconfig.sh
