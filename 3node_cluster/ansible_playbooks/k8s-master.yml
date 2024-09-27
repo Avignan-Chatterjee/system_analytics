@@ -27,8 +27,8 @@
       shell: echo "export KUBECONFIG=/home/vagrant/.kube/config" >> /home/vagrant/.bashrc
       become_user: vagrant
 
-    - name: Apply Calico network plugin
-      command: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-      environment:
-        KUBECONFIG: /home/vagrant/.kube/config
+        #- name: Apply Calico network plugin
+        #command: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+        #environment:
+        #KUBECONFIG: /home/vagrant/.kube/config
 

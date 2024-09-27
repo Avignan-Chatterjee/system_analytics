@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: nats-pv1
-  namespace: nats
+  namespace: nats-ns
 spec:
   capacity:
     storage: 1Gi  # Match this with the storage requested by the PVC
@@ -16,7 +16,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: nats-pv2
-  namespace: nats
+  namespace: nats-ns
 spec:
   capacity:
     storage: 1Gi  # Match this with the storage requested by the PVC
@@ -30,7 +30,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: nats-pv3
-  namespace: nats
+  namespace: nats-ns
 spec:
   capacity:
     storage: 1Gi  # Match this with the storage requested by the PVC
