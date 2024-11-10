@@ -10,11 +10,11 @@
 
     - name: Download and add GPG key for Kubernetes
       apt_key:
-        url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key
+        url: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
 
     - name: Add Kubernetes APT repository
       apt_repository:
-        repo: deb [arch=amd64] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /
+        repo: deb [arch=amd64] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /
         state: present
         filename: kubernetes
 
@@ -51,3 +51,30 @@
         name: docker
         enabled: yes
         state: started
+
+    - name: Create the containerd directory
+      file:
+        path: /etc/containerd
+        state: directory
+        mode: '0755'
+
+    - name: Generate the default containerd configuration
+      command: containerd config default
+      register: containerd_default_config
+
+    - name: Write the default containerd config to /etc/containerd/config.toml
+      copy:
+        content: "{{ containerd_default_config.stdout }}"
+        dest: /etc/containerd/config.toml
+        mode: '0644'
+
+    - name: Modify the SystemdCgroup setting in containerd config
+      replace:
+        path: /etc/containerd/config.toml
+        regexp: 'SystemdCgroup = false'
+        replace: 'SystemdCgroup = true'
+
+    - name: Restart containerd service
+      systemd:
+        name: containerd
+        state: restarted

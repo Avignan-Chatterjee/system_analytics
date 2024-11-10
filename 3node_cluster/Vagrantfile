@@ -18,12 +18,13 @@ Vagrant.configure("2") do |config|
       node.vm.hostname = "node#{i}"
 
       # Assign a public network IP (You may need to adjust IPs based on your network)
+      #node.vm.network "public_network", ip: "192.168.121.20#{i}", dev: "eth0"
       node.vm.network "private_network", ip: "192.168.1.10#{i}"
 
       # Customize VM resources
       node.vm.provider "libvirt" do |vb|
-        vb.memory = 4096
-        vb.cpus = 4
+        vb.memory = 8192
+        vb.cpus = 5
       end
 
       # Provision each node with necessary setup
