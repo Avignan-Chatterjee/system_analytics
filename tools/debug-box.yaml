@@ -1,0 +1,24 @@
+# ubuntu-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      containers:
+      - name: debug
+        image: nicolaka/netshoot
+        command: ["/bin/bash", "-c", "sleep infinity"]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+

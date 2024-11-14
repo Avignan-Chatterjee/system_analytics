@@ -18,8 +18,8 @@ data:
       listen: 0.0.0.0:6222
       # Routes to connect the NATS nodes
       routes = [
-        nats-route://nats-0:6222
-        nats-route://nats-1:6222
-        nats-route://nats-2:6222
+        nats-route://nats-0.nats-svc.nats-ns:6222
+        nats-route://nats-1.nats-svc.nats-ns:6222
+        nats-route://nats-2.nats-svc.nats-ns:6222
       ]
     }

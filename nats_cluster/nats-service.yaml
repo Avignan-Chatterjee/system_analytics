@@ -7,9 +7,12 @@ spec:
   ports:
     - name: client
       port: 4222
+      protocol: TCP
       targetPort: 4222
     - name: cluster
       port: 6222
+      protocol: TCP
       targetPort: 6222
   selector:
     app: nats
+  clusterIP: None

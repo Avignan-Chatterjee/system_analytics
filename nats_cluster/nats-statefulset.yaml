@@ -4,7 +4,7 @@ metadata:
   name: nats
   namespace: nats-ns
 spec:
-  serviceName: nats-cluster
+  serviceName: nats-svc #This should have the same as headless service name.
   replicas: 3
   selector:
     matchLabels:
@@ -33,7 +33,11 @@ spec:
           image: nats:latest
           ports:
             - containerPort: 4222  # Client port
+              name: client
+              protocol: TCP
             - containerPort: 6222  # Cluster port
+              name: cluster
+              protocol: TCP
           volumeMounts:
             - name: nats-config-volume
               mountPath: /etc/nats
