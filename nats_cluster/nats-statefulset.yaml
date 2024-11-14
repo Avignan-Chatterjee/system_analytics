@@ -4,7 +4,7 @@ metadata:
   name: nats
   namespace: nats-ns
 spec:
-  serviceName: nats-svc #This should have the same as headless service name.
+  serviceName: nats-svc #This should be same as the headless service name.
   replicas: 3
   selector:
     matchLabels:
