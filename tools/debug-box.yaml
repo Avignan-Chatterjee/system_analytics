@@ -1,4 +1,4 @@
-# ubuntu-deployment.yaml
+# debug-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,11 +7,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ubuntu
+      app: debug
   template:
     metadata:
       labels:
-        app: ubuntu
+        app: debug
     spec:
       containers:
       - name: debug
