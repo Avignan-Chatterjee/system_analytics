@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nats-setup-job
+  namespace: nats-ns
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: nats-cluster-probe
+        image: busybox:latest
+        command: ['sh', '-c', 'until nc -vz nats-2.nats-svc.nats-ns 6222; do echo "Waiting for nats cluster..."; sleep 1; done;']
+      containers:
+      - name: nats-setup
+        image: synadia/nats-box:latest
+        command:
+          - /bin/sh
+          - -c
+          - |
+            # Set up variables for NATS connection
+            NATS_SERVER=nats://nats-svc.nats-ns.svc.cluster.local:4222
+            
+            # Define the stream
+            nats stream add metric --server $NATS_SERVER \
+              --subjects "metric.datapoint.>" \
+              --storage file \
+              --retention limits \
+              --max-msgs=-1 \
+              --discard=old \
+              --max-msg-size=1024 \
+              --max-bytes=-1 \
+              --max-age=-1 \
+              --dupe-window=2m \
+              --replicas=3
+
+            # Define the pull consumer
+            nats consumer add metric metric_cpu_con --server $NATS_SERVER \
+              --pull \
+              --filter "metric.datapoint.cpu" \
+              --deliver all \
+              --replay instant \
+              --max-deliver=5 \
+              --max-pending=100 \
+              --ack explicit
+
+        env:
+          - name: NATS_SERVER
+            value: "nats://nats-svc.nats-ns.svc.cluster.local:4222"  # Replace with your NATS service address
+      restartPolicy: OnFailure

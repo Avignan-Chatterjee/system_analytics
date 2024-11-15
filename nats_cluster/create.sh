@@ -14,3 +14,6 @@ kubectl apply -f nats-pv.yaml
 
 echo "Creating nats statefulset"
 kubectl apply -f nats-statefulset.yaml
+
+echo "Setting up and Stream and Consumers"
+kubectl apply -f nats-setup-job.yaml
