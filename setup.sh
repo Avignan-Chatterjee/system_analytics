@@ -9,3 +9,8 @@ echo "Creating NATS cluster"
 pushd ./nats_cluster
 ./create.sh
 popd
+
+echo "Creating Zookeeper cluster"
+pushd ./zookeeper_cluster
+./create.sh
+popd
