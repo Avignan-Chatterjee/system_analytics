@@ -14,3 +14,8 @@ echo "Creating Zookeeper cluster"
 pushd ./zookeeper_cluster
 ./create.sh
 popd
+
+echo "Creating ClickHouse cluster"
+pushd ./clickhouse_cluster
+./create.sh
+popd

@@ -1,0 +1,32 @@
+---
+- name: Install Longhorn using Helm
+  hosts: masters
+  tasks:
+    - name: Add Longhorn Helm repository
+      command: helm repo add longhorn https://charts.longhorn.io
+
+    - name: Update Helm repositories
+      command: helm repo update
+
+    - name: Install Longhorn using Helm
+      command: helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace
+
+    - name: Wait for all Longhorn pods to be running
+      shell: >
+        kubectl -n longhorn-system get pods
+        --field-selector=status.phase!=Running,status.phase!=Succeeded
+        --no-headers
+      register: pod_check
+      retries: 30
+      delay: 15
+      until: pod_check.stdout == ""
+      changed_when: false
+
+    - name: Wait for all Longhorn deployments to be available
+      shell: >
+        kubectl -n longhorn-system wait --for=condition=Available deployment --all --timeout=0
+      register: deploy_check
+      retries: 10
+      delay: 15
+      until: '"met" in deploy_check.stdout or "already met" in deploy_check.stdout'
+      changed_when: false
