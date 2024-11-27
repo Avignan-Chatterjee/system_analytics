@@ -8,7 +8,7 @@ spec:
     clusters:
       - name: "cluster1"
         layout:
-          shardsCount: 2
+          shardsCount: 1
           replicasCount: 2
         templates:
           podTemplate: "default"
@@ -37,4 +37,4 @@ spec:
           storageClassName: longhorn
           resources:
             requests:
-              storage: 10Gi
+              storage: 5Gi

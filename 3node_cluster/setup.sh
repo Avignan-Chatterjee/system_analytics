@@ -20,4 +20,5 @@ if [ -f "/tmp/kubeconfig" ]; then
 fi
 sleep 10
 sshpass -pvagrant scp vagrant@192.168.1.101:/home/vagrant/.kube/config /tmp/kubeconfig
+sleep 5
 source ../utils/set_kubeconfig.sh
