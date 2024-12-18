@@ -1,0 +1,8 @@
+#! /usr/bin/bash
+
+set -e
+
+echo "Destroying Vagrant Cluster"
+pushd ./3node_cluster
+vagrant destroy --force
+popd

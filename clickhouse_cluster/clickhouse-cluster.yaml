@@ -5,6 +5,13 @@ metadata:
   namespace: "clickhouse"
 spec:
   configuration:
+    users:
+      admin/password: "Password.123"
+      admin/networks/ip:
+        - '0.0.0.0/0'
+        - '::/0'
+      admin/profile: default
+      admin/quota: default
     clusters:
       - name: "cluster1"
         layout:

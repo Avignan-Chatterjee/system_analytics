@@ -9,6 +9,9 @@ kubectl apply -f nats-config.yaml
 echo "Creating nats headless service"
 kubectl apply -f nats-service.yaml
 
+echo "Creating nats NodePort service"
+kubectl apply -f nats-service-nodeport.yaml
+
 #echo "Creating nats pvs"
 #kubectl apply -f nats-pv.yaml
 
