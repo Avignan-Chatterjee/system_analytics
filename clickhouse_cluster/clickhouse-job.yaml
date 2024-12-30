@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-clickhouse-table
+  namespace: default # Change to your namespace
+spec:
+  template:
+    spec:
+      containers:
+      - name: clickhouse-client
+        image: clickhouse/clickhouse-client:latest
+        command:
+          - bash
+          - -c
+          - |
+            # Wait until ClickHouse is available
+            echo "Waiting for ClickHouse to be ready..."
+            until clickhouse-client --host=${CLICKHOUSE_HOST} --port=${CLICKHOUSE_PORT} --user=${CLICKHOUSE_USER} --password=${CLICKHOUSE_PASSWORD} --query="SELECT 1;" >/dev/null 2>&1; do
+              echo "ClickHouse is not ready. Retrying in 5 seconds..."
+              sleep 5
+            done
+            echo "ClickHouse is ready. Creating table..."
+
+            # Create the database
+            clickhouse-client --host=${CLICKHOUSE_HOST} --port=${CLICKHOUSE_PORT} --user=${CLICKHOUSE_USER} --password=${CLICKHOUSE_PASSWORD} --query="CREATE DATABASE IF NOT EXISTS metric_db;"
+
+            # Create the table
+            clickhouse-client --host=${CLICKHOUSE_HOST} --port=${CLICKHOUSE_PORT} --user=${CLICKHOUSE_USER} --password=${CLICKHOUSE_PASSWORD} --query="CREATE TABLE IF NOT EXISTS metric_db.cpu_data (
+              id UInt64,
+              name String,
+              timestamp DateTime
+            ) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/cpu_data', '{replica}')
+            PARTITION BY toYYYYMM(timestamp)
+            ORDER BY id;"
+        env:
+        - name: CLICKHOUSE_HOST
+          value: "clickhouse-clickhouse-cluster.clickhouse" # Set your ClickHouse host
+        - name: CLICKHOUSE_PORT
+          value: "9000" # Default ClickHouse port
+        - name: CLICKHOUSE_USER
+          value: "admin" # Update username if necessary
+        - name: CLICKHOUSE_PASSWORD
+          value: "Password.123" # Update with password if necessary
+      restartPolicy: OnFailure
+  backoffLimit: 3

@@ -21,9 +21,14 @@ spec:
           podTemplate: "default"
           dataVolumeClaimTemplate: "storage-template"
     zookeeper:
-        nodes:
-        - host: zk-hs
+      nodes:
+        - host: zk-0.zk-hs.default
           port: 2181
+        - host: zk-1.zk-hs.default
+          port: 2181
+        - host: zk-2.zk-hs.default
+          port: 2181
+
   templates:
     podTemplates:
       - name: "default"
