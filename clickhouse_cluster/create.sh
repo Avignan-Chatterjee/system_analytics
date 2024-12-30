@@ -11,3 +11,6 @@ kubectl apply -f clickhouse-namespace.yaml
 
 echo "Creating clickhous cluster"
 kubectl apply -f clickhouse-cluster.yaml
+
+echo "Creating clickhous db and table"
+kubectl apply -f clickhouse-job.yaml
