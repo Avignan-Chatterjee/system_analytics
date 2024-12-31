@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: create-clickhouse-table
-  namespace: default # Change to your namespace
+  namespace: clickhouse # Change to your namespace
 spec:
   template:
     spec:
@@ -26,12 +26,12 @@ spec:
 
             # Create the table
             clickhouse-client --host=${CLICKHOUSE_HOST} --port=${CLICKHOUSE_PORT} --user=${CLICKHOUSE_USER} --password=${CLICKHOUSE_PASSWORD} --query="CREATE TABLE IF NOT EXISTS metric_db.cpu_data (
-              id UInt64,
-              name String,
+              host_uuid String,
+              cpu_percent Float64,
               timestamp DateTime
             ) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/cpu_data', '{replica}')
             PARTITION BY toYYYYMM(timestamp)
-            ORDER BY id;"
+            ORDER BY host_uuid;"
         env:
         - name: CLICKHOUSE_HOST
           value: "clickhouse-clickhouse-cluster.clickhouse" # Set your ClickHouse host
