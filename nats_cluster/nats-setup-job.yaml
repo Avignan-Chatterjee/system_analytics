@@ -37,7 +37,7 @@ spec:
             nats consumer add metric metric_cpu_con --server $NATS_SERVER \
               --pull \
               --filter "metric.datapoint.cpu" \
-              --deliver all \
+              --deliver last \
               --replay instant \
               --max-deliver=5 \
               --max-pending=100 \
