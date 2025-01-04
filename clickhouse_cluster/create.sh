@@ -14,3 +14,6 @@ kubectl apply -f clickhouse-cluster.yaml
 
 echo "Creating clickhous db and table"
 kubectl apply -f clickhouse-job.yaml
+
+echo "Creating clickhouse nodeport service"
+kubectl apply -f clickhouse-service-nodeport.yaml

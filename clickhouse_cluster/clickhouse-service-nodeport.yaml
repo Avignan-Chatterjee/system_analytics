@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    clickhouse.altinity.com/Service: chi
+    clickhouse.altinity.com/app: chop
+    clickhouse.altinity.com/chi: clickhouse-cluster
+    clickhouse.altinity.com/namespace: clickhouse
+    clickhouse.altinity.com/object-version: 2faf92bdbbb84bfa496093a6d110fbd947a5a34b
+  name: clickhouse-clickhouse
+  namespace: clickhouse
+spec:
+  ports:
+  - name: http
+    port: 8123
+    protocol: TCP
+    targetPort: http
+    nodePort: 30008
+  - name: tcp
+    port: 9000
+    protocol: TCP
+    targetPort: tcp
+    nodePort: 30009
+  selector:
+    clickhouse.altinity.com/app: chop
+    clickhouse.altinity.com/chi: clickhouse-cluster
+    clickhouse.altinity.com/namespace: clickhouse
+    clickhouse.altinity.com/ready: "yes"
+  sessionAffinity: None
+  type: NodePort
