@@ -1,0 +1,32 @@
+---
+- name: Install Grafana using Helm
+  hosts: masters
+  tasks:
+    - name: Add Grafana Helm repository
+      command: helm repo add grafana https://grafana.github.io/helm-charts
+
+    - name: Update Helm repositories
+      command: helm repo update
+
+    - name: Install Grafana using Helm
+      command: helm install grafana grafana/grafana --namespace monitoring --create-namespace --set persistence.enabled=true --set persistence.size=1Gi --set adminPassword=admin123
+
+    - name: Wait for all Grafana pods to be running
+      shell: >
+        kubectl -n monitoring get pods
+        --field-selector=status.phase!=Running,status.phase!=Succeeded
+        --no-headers
+      register: pod_check
+      retries: 30
+      delay: 15
+      until: pod_check.stdout == ""
+      changed_when: false
+
+    - name: Wait for all Grafana deployments to be available
+      shell: >
+        kubectl -n monitoring wait --for=condition=Available deployment --all --timeout=0
+      register: deploy_check
+      retries: 10
+      delay: 15
+      until: '"met" in deploy_check.stdout or "already met" in deploy_check.stdout'
+      changed_when: false

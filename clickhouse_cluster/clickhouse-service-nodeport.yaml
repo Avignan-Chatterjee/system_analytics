@@ -6,8 +6,7 @@ metadata:
     clickhouse.altinity.com/app: chop
     clickhouse.altinity.com/chi: clickhouse-cluster
     clickhouse.altinity.com/namespace: clickhouse
-    clickhouse.altinity.com/object-version: 2faf92bdbbb84bfa496093a6d110fbd947a5a34b
-  name: clickhouse-clickhouse
+  name: clickhouse-np
   namespace: clickhouse
 spec:
   ports:
