@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: data-processor
+spec:
+  containers:
+    - name: data-processor
+      image: avidoc16/data_processor:v5
+      env:
+        - name: CLICKHOUSE_ADDR
+          value: "clickhouse-clickhouse-cluster.clickhouse:9000"
+        - name: NATS_URL
+          value: "nats-svc.nats-ns:4222"
