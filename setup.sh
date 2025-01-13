@@ -26,3 +26,8 @@ echo "Creating Grafana cluster"
 pushd ./grafana
 ./create.sh
 popd
+
+echo "Creating Processor App"
+pushd ./processor
+./create.sh
+popd
